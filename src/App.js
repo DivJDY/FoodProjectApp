@@ -15,6 +15,7 @@ function App() {
   return (
     <div className="container">
       <Router>
+        {/* Navigation */}
         <Navigation className="w-25" />
         <div className="w-75">
           <Routes>
