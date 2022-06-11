@@ -1,19 +1,27 @@
 import React, { useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import fooddata from "./OFF_subset17.json";
+import history from "../history";
+import FoodDescription from "./foodDescription";
 
 // Data grid table should contain an unique key
 
-// Here I am taking data here only
+// Here I am taking collumn
 const columns = [
-  { field: "url", headerName: "url", width: 500 },
+  {
+    field: "product_name",
+    headerName: "Product name",
+    editable: true,
+    width: 300,
+  },
+  { field: "url", headerName: "url", editable: true, width: 500 },
   {
     field: "packaging",
     headerName: "Container",
     width: 150,
-    // editable: true,
     sortable: true,
   },
+
   {
     field: "serving_size",
     headerName: "Size",
@@ -35,48 +43,58 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    url: "http://world-en.openfoodfacts.org/product/6001087316415/flora-regular-60-fat-spread",
-    packaging: "Box,Plastic",
-    serving_size: "20 g",
-    energy_100g: 2230,
-    energy_from_fat_100g: null,
-  },
-  {
-    id: 2,
-    url: "http://world-en.openfoodfacts.org/product/8480000773555/lino-dorado-deliplus",
-    packaging: "Box,Plastic",
-    serving_size: "40 g",
-    energy_100g: 2233,
-    energy_from_fat_100g: null,
-  },
-  {
-    id: 3,
-    url: "http://world-en.openfoodfacts.org/product/3273227483476/postre-de-soja-sojasun-melocoton-2-uds",
-    packaging: "Box,Plastic",
-    serving_size: "30 g",
-    energy_100g: 2234,
-    energy_from_fat_100g: null,
-  },
-];
-
 export default function DataGridDemo() {
-  //   const [data, setData] = React.useState(fooddata);
+  const [data, setData] = React.useState([]);
 
-  //   const rows = [JSON.stringify(data)];
+  const handleRowSelection = (model) => {
+    // It will show the selected row value through an alert message and calling the foodDescription page using history.push of the navigation
+    var value =
+      model[Object.keys(model)][Object.keys(model[Object.keys(model)])[0]]
+        .value;
+    console.log("Va", value);
+    history.push("/foodDesc");
+    window.location.reload(true);
+    alert(value);
+    setData(value);
+  };
+
+  // Rows
+  const rows = fooddata?.map((user) => {
+    return {
+      id: user?.code,
+      product_name: user?.product_name,
+      url: user?.url,
+      packaging: user?.packaging,
+      serving_size: user?.serving_size,
+      energy_100g: user?.energy_100g,
+      energy_from_fat_100g: user?.energy_from_fat_100g,
+    };
+  });
 
   return (
-    <div style={{ height: 400, width: "100%" }} className="container-fluid">
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        checkboxSelection
-        disableSelectionOnClick
-      />
+    <div style={{ height: 500, width: "100%" }} className="container-fluid">
+      {/* <FoodDescription model={data} /> */}
+      {console.log("**", data)}
+      {rows.length > 0 ? (
+        <DataGrid
+          style={{ width: "100%" }}
+          rows={rows}
+          columns={columns}
+          pageSize={10}
+          rowsPerPageOptions={[5]}
+          checkboxSelection
+          headerHeight={50}
+          rowHeight={40}
+          scrollbarSize={2}
+          columnHeadersInner--scrollable
+          // Edit collumn of Product_name & url
+          onEditRowsModelChange={(model) => {
+            handleRowSelection(model);
+          }}
+        />
+      ) : (
+        <div className="text-center h2">No Data Found</div>
+      )}
     </div>
   );
 }
