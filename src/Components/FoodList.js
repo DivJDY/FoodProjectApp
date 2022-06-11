@@ -1,12 +1,11 @@
 import React from "react";
-import react, { useEffect, useState } from "react";
 import fooddata1 from "./OFF_subset17.json";
 import image from "../Image/icon.png";
 
 export default function FoodList() {
   // Display an Food data in a card
   // console.log("Hello");
-  // setSate
+  // setState
   const [fooddata] = React.useState(fooddata1);
 
   return (
